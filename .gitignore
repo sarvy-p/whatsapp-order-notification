@@ -1,0 +1,54 @@
+
+# package directories
+node_modules
+jspm_packages
+
+# build
+build
+dist
+.manifest-dist.yml
+
+# Config
+config.json
+.env*
+.aio
+
+# Adobe I/O console config
+console.json
+
+# Test output
+junit.xml
+
+# IDE & Temp
+.cache
+.idea
+.nyc_output
+.vscode
+.cursor
+coverage
+.aws.tmp.creds.json
+.wskdebug.props.tmp
+
+# Editor files
+*.swp
+*.swo
+*~
+
+# Parcel
+.parcel-cache
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# yeoman
+.yo-repository
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+

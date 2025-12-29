@@ -1,0 +1,20 @@
+{
+  "type": "com.adobe.commerce.observer.sales_order_place_after",
+  "source": "com.adobe.commerce",
+  "event_id": "test-event-123",
+  "data": {
+    "value": {
+      "order": {
+        "increment_id": "000000008",
+        "customer_email": "test@example.com",
+        "customer_firstname": "Test",
+        "customer_lastname": "Customer",
+        "addresses": [{
+          "telephone": "+1234567890"
+        }],
+        "grand_total": 100,
+        "order_currency_code": "USD"
+      }
+    }
+  }
+}

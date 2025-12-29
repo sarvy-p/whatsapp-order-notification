@@ -1,0 +1,36 @@
+application:
+  actions: actions
+  web: web-src
+  runtimeManifest:
+    packages:
+      whatsapp-order-notification:
+        license: Apache-2.0
+        actions:
+          order-notification:
+            function: actions/order-notification/index.js
+            web: 'yes'
+            runtime: nodejs:22
+            inputs:
+              LOG_LEVEL: debug
+              TWILIO_ACCOUNT_SID: $TWILIO_ACCOUNT_SID
+              TWILIO_AUTH_TOKEN: $TWILIO_AUTH_TOKEN
+              TWILIO_WHATSAPP_FROM: $TWILIO_WHATSAPP_FROM
+            annotations:
+              require-adobe-auth: false
+              final: true
+
+events:
+  registrations:
+    - name: WhatsApp Order Event Registration
+      description: Listens to Adobe Commerce order events and triggers WhatsApp notifications for order placement, status changes, shipments, and cancellations
+      event_delivery_format: cloud_events_v1
+      runtime_action: whatsapp-order-notification/order-notification
+      events_of_interest:
+        - provider: 14580afc-6913-4f17-afae-cae8bcdd6ce5
+          event_code: com.adobe.commerce.observer.sales_order_place_after
+        - provider: 14580afc-6913-4f17-afae-cae8bcdd6ce5
+          event_code: com.adobe.commerce.observer.sales_order_save_after
+        - provider: 14580afc-6913-4f17-afae-cae8bcdd6ce5
+          event_code: com.adobe.commerce.observer.sales_order_shipment_save_after
+        - provider: 14580afc-6913-4f17-afae-cae8bcdd6ce5
+          event_code: com.adobe.commerce.observer.sales_order_cancel_after
