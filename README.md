@@ -77,13 +77,6 @@ AIO_RUNTIME_NAMESPACE=your_namespace
 TWILIO_ACCOUNT_SID=your_account_sid
 TWILIO_AUTH_TOKEN=your_auth_token
 TWILIO_WHATSAPP_FROM=whatsapp:+1234567890
-
-## Commerce OAuth credentials (for local testing with PAAS)
-COMMERCE_BASE_URL=https://your-commerce-instance.com/
-COMMERCE_CONSUMER_KEY=your_consumer_key
-COMMERCE_CONSUMER_SECRET=your_consumer_secret
-COMMERCE_ACCESS_TOKEN=your_access_token
-COMMERCE_ACCESS_TOKEN_SECRET=your_access_token_secret
 ```
 
 You can generate the `.env` file using:
@@ -111,11 +104,7 @@ To run your actions locally for development and testing:
 aio app dev
 ```
 
-This will:
-- Start local runtime server on `localhost:9080` (default port)
-- Make actions available at `http://localhost:9080/api/v1/web/whatsapp-order-notification/order-notification`
-- Enable hot reload for code changes
-- Display action URLs and logs in the console
+This will start a local development server. The console will display the action URLs you can use for testing.
 
 For more information, see [Adobe App Builder Development Guide](https://developer.adobe.com/app-builder/docs/guides/development/#aio-app-dev-vs-aio-app-run)
 
@@ -123,43 +112,25 @@ For more information, see [Adobe App Builder Development Guide](https://develope
 
 You can test the order notification action locally using mock events:
 
-**Option 1: Using curl**
 ```bash
 # Start the local dev server first (in one terminal)
 aio app dev
 
-# In another terminal, invoke the action with a mock event
-curl -X POST http://localhost:9080/api/v1/web/whatsapp-order-notification/order-notification \
+# In another terminal, use curl to invoke the action
+# Replace <action-url> with the URL displayed in the console
+curl -X POST <action-url> \
   -H "Content-Type: application/json" \
   -d @mock-event.json
 ```
 
-**Option 2: Using aio-dev-invoke tool**
-If you have the commerce-extensibility-tools configured, you can use:
-```bash
-aio-dev-invoke whatsapp-order-notification/order-notification --file mock-event.json
-```
-
 ### Testing with Real Commerce Events
 
-To test with real Commerce events from your PAAS instance:
+To test with real Commerce events:
 
-1. Configure Commerce OAuth credentials in `.env` (see above)
-
-2. Start local dev server:
-   ```bash
-   aio app dev
-   ```
-
-3. Subscribe to Commerce events in your Commerce instance:
-   ```bash
-   bin/magento events:subscribe observer.sales_order_place_after --fields=increment_id,customer_email,customer_firstname,customer_lastname,grand_total,order_currency_code,status,state,billing_address,shipping_address,addresses
-   bin/magento events:subscribe observer.sales_order_save_after --fields=...
-   bin/magento events:subscribe observer.sales_order_shipment_save_after --fields=...
-   bin/magento events:subscribe observer.sales_order_cancel_after --fields=...
-   ```
-
-4. Configure Adobe I/O Events registration to point to your local webhook (using ngrok or similar tunneling service)
+1. Deploy the extension to Adobe I/O Runtime (see Deployment section)
+2. Configure event registration in Adobe I/O Console to point to your deployed Runtime action
+3. Ensure events are subscribed in your Commerce instance
+4. Place orders in Commerce to trigger events
 
 ## Deployment
 
@@ -172,14 +143,14 @@ aio app deploy
 This will:
 - Build and deploy all actions to Runtime
 - Deploy static files to CDN (if any)
-- Create/update event registrations (if configured)
+- Create/update event registrations (if configured in `app.config.yaml`)
 
 ### Event Registration
 
 The extension is configured with an event registration in `app.config.yaml` that:
 - Listens to 4 Commerce order events
 - Uses Runtime Action delivery method
-- Is automatically created/updated during deployment with `--force-events` flag
+- Is automatically created/updated during deployment
 
 To manually manage event registrations:
 ```bash
@@ -215,11 +186,6 @@ Run e2e tests:
 npm run e2e
 ```
 
-Or using Adobe I/O CLI:
-```bash
-aio app test --e2e
-```
-
 ## Configuration
 
 ### `app.config.yaml`
@@ -230,13 +196,6 @@ Main configuration file that defines the application's implementation. This file
 - Specifies event types to listen to
 
 More information on configuration can be found [here](https://developer.adobe.com/app-builder/docs/guides/configuration/#appconfigyaml)
-
-### Action Dependencies
-
-This project uses the **packaged action file** method:
-- Dependencies are defined in the root `package.json`
-- Webpack packages code and dependencies into a single minified file
-- The action is deployed as a single file for optimal performance
 
 ## Debugging
 
