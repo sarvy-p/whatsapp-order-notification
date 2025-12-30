@@ -1,0 +1,8 @@
+# Code Owners
+# This file defines ownership of code in this repository.
+# All pull requests will require approval from code owners.
+
+# All files in this repository are owned by sarvy-p
+# All PRs will be automatically assigned for review
+* @sarvy-p
+

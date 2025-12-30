@@ -61,10 +61,11 @@ function generateCancellationMessage (customerName, orderNumber) {
  * @returns {string} Generated message
  */
 function generateMessageByEventType (eventType, orderData, customerName, orderNumber, shipmentData = null) {
-  const isOrderCancelled = eventType.includes('sales_order_cancel_after')
-  const isOrderPlaced = eventType.includes('sales_order_place_after')
-  const isShipmentCreated = eventType.includes('sales_order_shipment_save_after')
-  const isOrderSaved = eventType.includes('sales_order_save_after')
+  // Use exact matching to avoid false positives from substring matching
+  const isOrderCancelled = eventType === 'com.adobe.commerce.observer.sales_order_cancel_after'
+  const isOrderPlaced = eventType === 'com.adobe.commerce.observer.sales_order_place_after'
+  const isShipmentCreated = eventType === 'com.adobe.commerce.observer.sales_order_shipment_save_after'
+  const isOrderSaved = eventType === 'com.adobe.commerce.observer.sales_order_save_after'
 
   const orderTotal = orderData.grand_total
   const orderCurrency = orderData.order_currency_code
